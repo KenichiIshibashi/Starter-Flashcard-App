@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Layout from "./Layout";
 import CreateDeck from "./Layout/CreateDeck";
+import EditDeck from "./Layout/EditDeck";
 import Deck from "./Layout/Deck";
 import "./App.css";
 
@@ -18,6 +19,9 @@ function App() {
         </Route>
         <Route path="/decks/new">
           <CreateDeck />
+        </Route>
+        <Route path="/decks/:deckId/edit">
+          <EditDeck />
         </Route>
         <Route path="/decks/:deckId">
           <Deck />
