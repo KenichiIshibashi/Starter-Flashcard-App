@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory, Link } from "react-router-dom";
-import { readDeck, deleteDeck, deleteCard } from "../utils/api";
+import { readDeck, deleteDeck, deleteCard } from "../../utils/api";
 
 function Deck() {
   const { deckId } = useParams();
@@ -70,30 +70,34 @@ function Deck() {
       </div>
       <h2>Cards</h2>
       <div>
-        {deck.cards.map((card) => (
-          <div key={card.id} className="card">
-            <div className="card-body">
-              <p>
-                <strong>Question:</strong> {card.front}
-              </p>
-              <p>
-                <strong>Answer:</strong> {card.back}
-              </p>
-              <Link
-                to={`/decks/${deckId}/cards/${card.id}/edit`}
-                className="btn btn-secondary"
-              >
-                Edit
-              </Link>
-              <button
-                onClick={() => handleDeleteCard(card.id)}
-                className="btn btn-danger"
-              >
-                Delete
-              </button>
+        {deck.cards && deck.cards.length > 0 ? (
+          deck.cards.map((card) => (
+            <div key={card.id} className="card">
+              <div className="card-body">
+                <p>
+                  <strong>Question:</strong> {card.front}
+                </p>
+                <p>
+                  <strong>Answer:</strong> {card.back}
+                </p>
+                <Link
+                  to={`/decks/${deckId}/cards/${card.id}/edit`}
+                  className="btn btn-secondary"
+                >
+                  Edit
+                </Link>
+                <button
+                  onClick={() => handleDeleteCard(card.id)}
+                  className="btn btn-danger"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No cards available.</p>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams, Link } from "react-router-dom";
-import { readDeck, updateDeck } from "../utils/api";
+import { readDeck, updateDeck } from "../../utils/api";
 
 function EditDeck() {
   const { deckId } = useParams();
