@@ -2,29 +2,31 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 function Card({ deck }) {
-  const [cardDisplay, setCardDisplay] = useState(true);
+  const [cardSide, setCardSide] = useState(true);
   const [index, setIndex] = useState(0);
   const history = useHistory();
 
   const handleNext = () => {
     if (index !== deck.cards.length - 1) {
       setIndex(index + 1);
-      setCardDisplay(true);
+      setCardSide(true);
     } else {
       const result = window.confirm(
-        "Restart cards? Click cancel to return to the home page."
+        "Restart cards?\n\n\nClick 'cancel to return to the home page."
       );
       if (result) {
         setIndex(0);
-        setCardDisplay(true);
+        setCardSide(true);
       } else {
         history.push("/");
       }
     }
   };
+
   const handleFlip = () => {
-    setCardDisplay(!cardDisplay);
+    setCardSide(!cardSide);
   };
+
   return (
     <div className="row">
       <div className="col-sm-6">
@@ -35,9 +37,7 @@ function Card({ deck }) {
             </h4>
             <span className="card-buttons d-flex justify-content-between">
               <p className="card-text my-1">
-                {cardDisplay
-                  ? deck?.cards[index].front
-                  : deck?.cards[index].back}
+                {cardSide ? deck?.cards[index].front : deck?.cards[index].back}
               </p>
             </span>
             <button
@@ -46,7 +46,7 @@ function Card({ deck }) {
             >
               Flip
             </button>
-            {!cardDisplay && (
+            {!cardSide && (
               <button className="btn btn-primary" onClick={handleNext}>
                 Next
               </button>

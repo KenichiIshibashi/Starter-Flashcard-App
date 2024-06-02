@@ -4,7 +4,7 @@ import { listDecks } from "../../utils/api";
 import Deck from "../Decks/Deck";
 import ErrorMessage from "../ErrorMessages";
 
-export const ListDeck = () => {
+export const DeckList = () => {
   const [error, setError] = useState(undefined);
   const [decks, setDecks] = useState([]);
 
@@ -29,4 +29,4 @@ export const ListDeck = () => {
   return <>{list}</>;
 };
 
-export default ListDeck;
+export default DeckList;

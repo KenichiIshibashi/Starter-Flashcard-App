@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, Link, useParams } from "react-router-dom";
 import { deleteCard, deleteDeck, readDeck } from "../../utils/api";
 
-function ViewDeck() {
+function DeckView() {
   const [deck, setDeck] = useState();
   const { deckId } = useParams();
   const history = useHistory();
@@ -132,4 +132,4 @@ function ViewDeck() {
   );
 }
 
-export default ViewDeck;
+export default DeckView;

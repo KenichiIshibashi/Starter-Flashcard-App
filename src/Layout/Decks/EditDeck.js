@@ -1,89 +1,98 @@
-import React, { useEffect, useState } from "react";
-import { useHistory, useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import { readDeck, updateDeck } from "../../utils/api";
 
-function EditDeck() {
-  const { deckId } = useParams();
-  const [deck, setDeck] = useState({ name: "", description: "" });
+function DeckEdit() {
   const history = useHistory();
+  const { deckId } = useParams();
+  const [deck, setDeck] = useState({});
 
   useEffect(() => {
-    const fetchDeck = async () => {
-      const response = await readDeck(deckId);
-      setDeck(response);
-    };
-    fetchDeck();
-  }, [deckId]);
+    async function loadDecks() {
+      const loadedDeck = await readDeck(deckId);
+      setDeck(loadedDeck);
+    }
+    loadDecks();
+  }, [deckId, setDeck]);
 
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
-    setDeck((prevDeck) => ({ ...prevDeck, [name]: value }));
-  };
+  function changeName(event) {
+    setDeck({ ...deck, name: event.target.value });
+  }
 
-  const handleSubmit = async (event) => {
+  function changeDesc(event) {
+    setDeck({ ...deck, description: event.target.value });
+  }
+
+  function saveHandler(event) {
     event.preventDefault();
-    await updateDeck(deck);
-    history.push(`/decks/${deckId}`);
-  };
+    updateDeck(deck).then((response) => history.push(`/decks/${deck.id}`));
+  }
 
-  const handleCancel = () => {
-    history.push(`/decks/${deckId}`);
-  };
+  function handleCancel() {
+    history.push(`/decks/${deck.id}`);
+  }
 
   return (
-    <div className="container">
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="breadcrumb-item">
-            <Link to={`/decks/${deckId}`}>{deck.name}</Link>
-          </li>
-          <li className="breadcrumb-item active" aria-current="page">
-            Edit Deck
-          </li>
-        </ol>
-      </nav>
-      <h1>Edit Deck</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            className="form-control"
-            id="name"
-            name="name"
-            value={deck.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            className="form-control"
-            id="description"
-            name="description"
-            rows="3"
-            value={deck.description}
-            onChange={handleChange}
-            required
-          ></textarea>
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary ml-2"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-      </form>
+    <div>
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item">
+              <a href="/">Home</a>
+            </li>
+            <li className="breadcrumb-item">
+              <a href={`/decks/${deckId}`}>{deck.name}</a>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page">
+              Edit Deck
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <div>
+        <form>
+          <h1>Edit Deck</h1>
+          <div className="mb-3">
+            <label className="form-label">Name</label>
+            <textarea
+              type="text"
+              className="form-control"
+              id="front"
+              value={deck.name}
+              onChange={changeName}
+              rows="3"
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Description</label>
+            <textarea
+              className="form-control"
+              id="back"
+              value={deck.description}
+              onChange={changeDesc}
+              rows="3"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="btn btn-primary mx-1"
+            onClick={saveHandler}
+          >
+            Save
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
 
-export default EditDeck;
+export default DeckEdit;

@@ -4,13 +4,14 @@ import { useParams, Link } from "react-router-dom";
 import NotEnoughCards from "../Cards/NotEnoughCards";
 import Card from "../Cards/Card";
 
-function StudyDeck() {
+function DeckStudy() {
   const [deck, setDeck] = useState([]);
+  const [error, setError] = useState(undefined);
   const { deckId } = useParams();
 
   useEffect(() => {
     const abortController = new AbortController();
-    readDeck(deckId, abortController.signal).then(setDeck).catch(console.error);
+    readDeck(deckId, abortController.signal).then(setDeck).catch(setError);
 
     return () => abortController.abort();
   }, [deckId]);
@@ -42,4 +43,4 @@ function StudyDeck() {
   );
 }
 
-export default StudyDeck;
+export default DeckStudy;

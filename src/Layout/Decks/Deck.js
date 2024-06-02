@@ -1,106 +1,56 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useHistory, Link } from "react-router-dom";
-import { readDeck, deleteDeck, deleteCard } from "../../utils/api";
+import React from "react";
+import { Link, useHistory } from "react-router-dom";
+import { deleteDeck } from "../../utils/api";
 
-function Deck() {
-  const { deckId } = useParams();
-  const [deck, setDeck] = useState(null);
+export const Deck = ({ deck }) => {
   const history = useHistory();
 
-  useEffect(() => {
-    const fetchDeck = async () => {
-      const response = await readDeck(deckId);
-      setDeck(response);
-    };
-    fetchDeck();
-  }, [deckId]);
-
-  const handleDeleteDeck = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this deck?"
+  const handleDelete = async (id) => {
+    const result = window.confirm(
+      "Delete this card? You will not be able to recover it."
     );
-    if (confirmDelete) {
-      await deleteDeck(deckId);
+    if (result) {
+      await deleteDeck(id);
       history.push("/");
+      window.location.reload(false);
     }
   };
-
-  const handleDeleteCard = async (cardId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this card?"
-    );
-    if (confirmDelete) {
-      await deleteCard(cardId);
-      setDeck((prevDeck) => ({
-        ...prevDeck,
-        cards: prevDeck.cards.filter((card) => card.id !== cardId),
-      }));
-    }
-  };
-
-  if (!deck) return <p>Loading...</p>;
 
   return (
-    <div className="container">
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="breadcrumb-item active" aria-current="page">
-            {deck.name}
-          </li>
-        </ol>
-      </nav>
-      <h1>{deck.name}</h1>
-      <p>{deck.description}</p>
-      <div>
-        <Link to={`/decks/${deckId}/edit`} className="btn btn-secondary">
-          Edit
-        </Link>
-        <Link to={`/decks/${deckId}/study`} className="btn btn-primary">
-          Study
-        </Link>
-        <Link to={`/decks/${deckId}/cards/new`} className="btn btn-primary">
-          Add Cards
-        </Link>
-        <button onClick={handleDeleteDeck} className="btn btn-danger">
-          Delete
-        </button>
-      </div>
-      <h2>Cards</h2>
-      <div>
-        {deck.cards && deck.cards.length > 0 ? (
-          deck.cards.map((card) => (
-            <div key={card.id} className="card">
-              <div className="card-body">
-                <p>
-                  <strong>Question:</strong> {card.front}
-                </p>
-                <p>
-                  <strong>Answer:</strong> {card.back}
-                </p>
-                <Link
-                  to={`/decks/${deckId}/cards/${card.id}/edit`}
-                  className="btn btn-secondary"
-                >
-                  Edit
-                </Link>
-                <button
-                  onClick={() => handleDeleteCard(card.id)}
-                  className="btn btn-danger"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No cards available.</p>
-        )}
+    <div className="row">
+      <div className="col-sm-6">
+        <div className="card">
+          <div className="card-body">
+            <span className="card-top d-flex justify-content-between">
+              <h3 className="card-title">{deck.name}</h3>
+              <p>{deck.cards.length} cards</p>
+            </span>
+            <p className="card-text">{deck.description}</p>
+            <span className="card-buttons d-flex justify-content-between">
+              <Link
+                to={`/decks/${deck.id}`}
+                className="btn btn-secondary mx-1 "
+              >
+                View
+              </Link>
+              <Link
+                to={`/decks/${deck.id}/study`}
+                className="btn btn-primary mx-1"
+              >
+                Study
+              </Link>
+              <button
+                className="btn btn-danger ml-auto"
+                onClick={() => handleDelete(deck.id)}
+              >
+                Delete
+              </button>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default Deck;
